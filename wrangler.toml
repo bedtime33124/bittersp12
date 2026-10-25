@@ -1,0 +1,14 @@
+name = "bittersp12"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Serves public/ (index.html, admin.html). Only /api/* runs the Worker.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bittersp12"
+database_id = "PASTE_ID_FROM_D1_CREATE"
