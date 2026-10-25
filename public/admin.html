@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Admin · Orders</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --text: #0a0a0a;
+      --muted: #6b6b6b;
+      --line: #ececec;
+      --line-strong: #d4d4d4;
+      --panel: #fafafa;
+      --accent: #0a0a0a;
+      --accent-text: #ffffff;
+      --danger: #b91c1c;
+      --ok: #15803d;
+      --radius: 14px;
+      --ring: rgba(10, 10, 10, 0.12);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0b0c;
+        --text: #f5f5f5;
+        --muted: #9a9aa0;
+        --line: #232327;
+        --line-strong: #3a3a40;
+        --panel: #141416;
+        --accent: #f5f5f5;
+        --accent-text: #0b0b0c;
+        --danger: #f87171;
+        --ok: #4ade80;
+        --ring: rgba(255, 255, 255, 0.14);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding: 20px 16px calc(40px + env(safe-area-inset-bottom, 0px));
+      max-width: 760px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.12s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:hover { border-color: var(--text); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .btn-dark { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+    .btn-dark:hover { opacity: 0.9; }
+
+    .btn-small { min-height: 34px; padding: 6px 14px; font-size: 0.8rem; }
+
+    .btn:focus-visible, input:focus-visible, [data-filter]:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    /* ---------- Top bar ---------- */
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ---------- Filters ---------- */
+    .filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      padding: 4px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      width: fit-content;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    .filters .btn {
+      border-color: transparent;
+      background: transparent;
+      color: var(--muted);
+      min-height: 34px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .filters .btn:hover { color: var(--text); border-color: transparent; }
+
+    .filters .btn[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    .count {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      min-height: 1.2em;
+    }
+
+    .msg {
+      font-size: 0.85rem;
+      color: var(--ok);
+      min-height: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    /* ---------- Login ---------- */
+    .login {
+      max-width: 380px;
+      margin: 56px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .login-head h1 { font-size: 1.5rem; }
+    .login-head p { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
+
+    .login form { display: flex; flex-direction: column; gap: 14px; }
+
+    .login label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    /* 16px stops iPhone Safari zooming in on focus */
+    .login input {
+      font: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      min-height: 46px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      padding: 11px 14px;
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .login input:focus {
+      outline: none;
+      border-color: var(--text);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    .login .btn { width: 100%; min-height: 46px; font-size: 0.92rem; }
+
+    .error { font-size: 0.85rem; color: var(--danger); font-weight: 500; min-height: 1.2em; }
+
+    /* ---------- Order cards ---------- */
+    .list { display: grid; gap: 12px; }
+
+    .order {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .order-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .order-title { font-weight: 650; font-size: 0.98rem; letter-spacing: -0.01em; }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 3px 10px;
+      white-space: nowrap;
+    }
+
+    .badge.pending { color: var(--text); border-style: dashed; }
+    .badge.todo { color: var(--accent-text); background: var(--accent); border-color: var(--accent); }
+    .badge.done { color: var(--text); border-color: var(--text); }
+
+    .field { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+    .field b { color: var(--text); font-weight: 550; word-break: break-all; }
+
+    .udid {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      word-break: break-all;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+    }
+
+    .note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 4px; }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 48px 0;
+      font-size: 0.92rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login -->
+  <section id="login-view" class="login" hidden>
+    <div class="login-head">
+      <h1>Admin</h1>
+      <p>Log in with your admin account.</p>
+    </div>
+    <form id="login-form" novalidate>
+      <label>Email
+        <input type="email" name="email" autocomplete="username" required>
+      </label>
+      <label>Password
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <p class="error" id="login-error" role="alert"></p>
+      <button type="submit" class="btn btn-dark" id="login-submit">Log in</button>
+    </form>
+  </section>
+
+  <!-- Panel -->
+  <section id="panel-view" hidden>
+    <div class="top">
+      <h1>Orders</h1>
+      <div class="row">
+        <button type="button" class="btn btn-small" id="refresh-btn">Refresh</button>
+        <button type="button" class="btn btn-small" id="logout-btn">Log out</button>
+      </div>
+    </div>
+
+    <div class="filters" role="group" aria-label="Filter orders">
+      <button type="button" class="btn" data-filter="pending" aria-pressed="false">Waiting payment</button>
+      <button type="button" class="btn" data-filter="todo" aria-pressed="true">To deliver</button>
+      <button type="button" class="btn" data-filter="delivered" aria-pressed="false">Delivered</button>
+      <button type="button" class="btn" data-filter="all" aria-pressed="false">All</button>
+    </div>
+
+    <p class="count" id="count"></p>
+    <p class="msg" id="panel-msg" role="status"></p>
+    <div class="list" id="list"></div>
+  </section>
+
+  <script>
+    const API = "/api";
+    const TOKEN_KEY = "p12_admin_token";
+
+    const FILTERS = {
+      pending: o => o.state === "pending",
+      todo: o => o.state === "delivering",
+      delivered: o => o.state === "delivered",
+      all: () => true
+    };
+    const STATE_TEXT = { pending: "Waiting payment", delivering: "To deliver", delivered: "Delivered" };
+
+    let orders = [];
+    let filter = "todo";
+
+    const loginView = document.getElementById("login-view");
+    const panelView = document.getElementById("panel-view");
+    const loginError = document.getElementById("login-error");
+    const loginForm = document.getElementById("login-form");
+    const loginSubmit = document.getElementById("login-submit");
+    const list = document.getElementById("list");
+    const countEl = document.getElementById("count");
+    const panelMsg = document.getElementById("panel-msg");
+
+    // ---- Session (admin token only) ----
+    function getToken() { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } }
+    function setToken(t) { try { localStorage.setItem(TOKEN_KEY, t); } catch {} }
+    function clearToken() { try { localStorage.removeItem(TOKEN_KEY); } catch {} }
+
+    async function api(path, options = {}) {
+      const headers = { "Content-Type": "application/json" };
+      const token = getToken();
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      const res = await fetch(API + path, { ...options, headers });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const err = new Error(data.error || `Request failed (${res.status})`);
+        err.status = res.status;
+        throw err;
+      }
+      return data;
+    }
+
+    // ---- Helpers ----
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function fmt(date) {
+      return date ? new Date(date.endsWith("Z") ? date : date + "Z").toLocaleString() : "—";
+    }
+
+    function flash(text) {
+      panelMsg.textContent = text;
+      setTimeout(() => { if (panelMsg.textContent === text) panelMsg.textContent = ""; }, 3000);
+    }
+
+    function copyText(text) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(
+          () => flash("Copied to clipboard"),
+          () => prompt("Copy this:", text)
+        );
+      } else {
+        prompt("Copy this:", text);
+      }
+    }
+
+    // ---- Views ----
+    function showLogin(message) {
+      panelView.hidden = true;
+      loginView.hidden = false;
+      loginError.textContent = message || "";
+      document.querySelector('#login-form input[name="email"]').focus();
+    }
+
+    function showPanel() {
+      loginView.hidden = true;
+      panelView.hidden = false;
+    }
+
+    // ---- Loading ----
+    async function loadOrders() {
+      try {
+        const data = await api("/admin/orders");
+        orders = data.orders;
+        showPanel();
+        render();
+      } catch (err) {
+        clearToken();
+        if (err.status === 401) showLogin("Your session has expired. Please log in again.");
+        else if (err.status === 403) showLogin("This account is not an admin.");
+        else showLogin(err.message);
+      }
+    }
+
+    // ---- Rendering ----
+    function render() {
+      list.replaceChildren();
+      const shown = orders.filter(FILTERS[filter]);
+      countEl.textContent = `${shown.length} order${shown.length === 1 ? "" : "s"}`;
+
+      if (shown.length === 0) {
+        list.appendChild(el("p", "empty", "No orders here."));
+        return;
+      }
+      shown.forEach(o => list.appendChild(orderCard(o)));
+    }
+
+    function badgeClass(state) {
+      if (state === "delivering") return "badge todo";
+      if (state === "delivered") return "badge done";
+      return "badge pending";
+    }
+
+    function orderCard(o) {
+      const card = el("article", "order");
+
+      // Header
+      const head = el("div", "order-head");
+      head.appendChild(el("div", "order-title", o.package_name));
+      head.appendChild(el("span", badgeClass(o.state), STATE_TEXT[o.state] || o.state));
+
+      // Details
+      const deliverTo = el("div", "field");
+      deliverTo.append("Send to: ", el("b", "", o.delivery_email || "(missing)"));
+
+      const udidLabel = el("div", "field", "UDID");
+      const udid = el("div", "udid", o.udid || "(missing)");
+
+      const ref = el("div", "field");
+      ref.append("Ref: ", el("b", "", o.ref || "—"), " · ID: ", el("b", "", o.id));
+
+      const times = el("div", "field");
+      times.append("Ordered: ", el("b", "", fmt(o.created_at)));
+      times.appendChild(document.createElement("br"));
+      times.append("Paid: ", el("b", "", fmt(o.paid_at)));
+      if (o.delivered_at) {
+        times.appendChild(document.createElement("br"));
+        times.append("Delivered: ", el("b", "", fmt(o.delivered_at)));
+      }
+      if (o.expires_at) {
+        times.appendChild(document.createElement("br"));
+        times.append("Expires: ", el("b", "", fmt(o.expires_at)));
+      }
+
+      card.append(head, deliverTo, udidLabel, udid, ref, times);
+
+      if (o.delivery_note) card.appendChild(el("div", "note", `Note: ${o.delivery_note}`));
+
+      // Actions
+      const actions = el("div", "actions");
+
+      if (o.state === "pending") {
+        const paidBtn = el("button", "btn btn-small btn-dark", "Mark paid");
+        paidBtn.type = "button";
+        paidBtn.addEventListener("click", () => markPaid(o, paidBtn));
+        actions.appendChild(paidBtn);
+      }
+
+      if (o.state === "pending" || o.state === "delivering") {
+        const copyBtn = el("button", "btn btn-small", "Copy UDID");
+        copyBtn.type = "button";
+        copyBtn.addEventListener("click", () => copyText(o.udid || ""));
+        actions.appendChild(copyBtn);
+
+        const fixBtn = el("button", "btn btn-small", "Fix UDID");
+        fixBtn.type = "button";
+        fixBtn.addEventListener("click", () => fixUdid(o));
+        actions.appendChild(fixBtn);
+      }
+
+      if (o.state === "delivering") {
+        const doneBtn = el("button", "btn btn-small btn-dark", "Mark delivered");
+        doneBtn.type = "button";
+        doneBtn.addEventListener("click", () => markDelivered(o, doneBtn));
+        actions.appendChild(doneBtn);
+      }
+
+      if (actions.children.length) card.appendChild(actions);
+      return card;
+    }
+
+    // ---- Actions ----
+    async function markPaid(o, btn) {
+      const ok = confirm(
+        `Confirm you received payment in Paymento for this order?\n\nRef: ${o.ref}\nPackage: ${o.package_name}\nSend to: ${o.delivery_email || "(missing)"}`
+      );
+      if (!ok) return;
+
+      btn.disabled = true;
+      try {
+        await api(`/admin/orders/${o.id}/paid`, { method: "POST" });
+        flash("Marked paid. Ready to deliver.");
+        await loadOrders();
+      } catch (err) {
+        alert(err.message);
+        btn.disabled = false;
+      }
+    }
+
+    async function fixUdid(o) {
+      const next = prompt("Enter the correct UDID for this order:", o.udid || "");
+      if (next === null) return;
+      try {
+        await api(`/admin/orders/${o.id}/udid`, {
+          method: "POST",
+          body: JSON.stringify({ udid: next.trim() })
+        });
+        flash("UDID updated");
+        await loadOrders();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function markDelivered(o, btn) {
+      // Confirm the exact UDID and email before recording delivery.
+      const ok = confirm(
+        `Confirm you have sent the certificate to this UDID?\n\n${o.udid}\n\nSend to: ${o.delivery_email || "(missing)"}\nPackage: ${o.package_name}\nRef: ${o.ref}`
+      );
+      if (!ok) return;
+
+      const defaultExpiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+      const expires = prompt("Expiry date (YYYY-MM-DD):", defaultExpiry);
+      if (expires === null) return;
+      const note = prompt("Optional note (for example, how it was sent):", "") || "";
+
+      btn.disabled = true;
+      try {
+        await api(`/admin/orders/${o.id}/delivered`, {
+          method: "POST",
+          body: JSON.stringify({ expires_at: expires.trim(), note: note.trim() })
+        });
+        flash("Marked delivered");
+        await loadOrders();
+      } catch (err) {
+        alert(err.message);
+        btn.disabled = false;
+      }
+    }
+
+    // ---- Login ----
+    loginForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      loginError.textContent = "";
+      const email = loginForm.email.value.trim();
+      const password = loginForm.password.value;
+
+      if (!email || !password) {
+        loginError.textContent = "Enter your email and password.";
+        return;
+      }
+
+      loginSubmit.disabled = true;
+      loginSubmit.textContent = "Please wait…";
+      try {
+        const { token } = await api("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
+        setToken(token);
+        loginForm.reset();
+        await loadOrders();
+      } catch (err) {
+        loginError.textContent = err.message;
+      } finally {
+        loginSubmit.disabled = false;
+        loginSubmit.textContent = "Log in";
+      }
+    });
+
+    // ---- Filters ----
+    document.querySelectorAll("[data-filter]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        filter = btn.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach(b =>
+          b.setAttribute("aria-pressed", String(b === btn)));
+        render();
+      });
+    });
+
+    document.getElementById("refresh-btn").addEventListener("click", loadOrders);
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      clearToken();
+      showLogin("");
+    });
+
+    // ---- Start ----
+    if (getToken()) loadOrders();
+    else showLogin("");
+  </script>
+</body>
+</html>
