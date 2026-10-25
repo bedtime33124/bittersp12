@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>P12 Certificates</title>
+  <meta name="description" content="Choose the P12 certificate package that fits your needs. One certificate per device.">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --text: #0a0a0a;
+      --muted: #6b6b6b;
+      --line: #ececec;
+      --line-strong: #d4d4d4;
+      --accent: #0a0a0a;
+      --accent-hover: #262626;
+      --accent-text: #ffffff;
+      --danger: #b91c1c;
+      --ok: #15803d;
+      --ring: rgba(10, 10, 10, 0.12);
+      --backdrop: rgba(10, 10, 10, 0.35);
+      --glass: rgba(255, 255, 255, 0.82);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.22);
+      --tabbar-h: 68px;
+      --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0b0c;
+        --text: #f5f5f5;
+        --muted: #9a9aa0;
+        --line: #232327;
+        --line-strong: #3a3a40;
+        --accent: #f5f5f5;
+        --accent-hover: #dcdcdc;
+        --accent-text: #0b0b0c;
+        --danger: #f87171;
+        --ok: #4ade80;
+        --ring: rgba(255, 255, 255, 0.14);
+        --backdrop: rgba(0, 0, 0, 0.6);
+        --glass: rgba(18, 18, 20, 0.82);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
+        --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.7);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      padding: 72px 24px calc(var(--tabbar-h) + 64px + env(safe-area-inset-bottom, 0px));
+      min-height: 100vh;
+    }
+
+    body.modal-open { overflow: hidden; }
+    a { color: inherit; text-underline-offset: 3px; }
+    p { color: var(--muted); }
+
+    /* ---------- Hero ---------- */
+    .hero { text-align: center; max-width: 580px; margin: 0 auto 64px; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 5px 14px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+
+    .hero p { margin-top: 14px; font-size: 1rem; }
+    .hero-actions { margin-top: 28px; display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; }
+
+    /* ---------- Cards ---------- */
+    .grid,
+    .help-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px 26px 26px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--line-strong);
+    }
+
+    .card h2 { font-size: 1.02rem; font-weight: 650; line-height: 1.4; letter-spacing: -0.01em; }
+
+    .tag {
+      align-self: flex-start;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .price {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      margin: 22px 0 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .price small { font-size: 0.85rem; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+
+    .card ul {
+      list-style: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 26px;
+      flex: 1;
+    }
+
+    .card ul li {
+      padding: 10px 0 10px 22px;
+      border-top: 1px solid var(--line);
+      position: relative;
+    }
+
+    .card ul li:first-child { border-top: none; padding-top: 0; }
+
+    .card ul li::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      margin-top: -3px;
+      border-radius: 50%;
+      background: var(--text);
+      opacity: 0.8;
+    }
+
+    .card ul li:first-child::before { top: 9px; margin-top: 0; }
+
+    .card ol {
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding-left: 22px;
+      margin: 18px 0 20px;
+      flex: 1;
+    }
+
+    .card ol li { padding: 5px 0; }
+    .card ol li::marker { color: var(--text); font-weight: 600; }
+    .card > p { font-size: 0.85rem; }
+
+    .faq { margin-top: 16px; display: flex; flex-direction: column; gap: 4px; }
+
+    .faq details { border-top: 1px solid var(--line); padding: 10px 0; }
+    .faq details:first-child { border-top: none; padding-top: 0; }
+
+    .faq summary {
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      list-style: none;
+    }
+
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq p { font-size: 0.85rem; margin-top: 8px; }
+
+    .bottom-link { display: flex; justify-content: center; margin-top: 56px; }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 36px;
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    /* ---------- Check an order ---------- */
+    .narrow { max-width: 520px; margin: 0 auto; }
+
+    .lookup-card {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px 26px 26px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .lookup-card h2 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+    .lookup-card > p { font-size: 0.9rem; margin-top: 8px; }
+    .lookup-result { margin-top: 18px; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 46px;
+      text-align: center;
+      text-decoration: none;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 12px 18px;
+      cursor: pointer;
+      transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.12s var(--ease), opacity 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:hover { border-color: var(--text); }
+    .btn:active { transform: scale(0.98); }
+
+    .card .btn {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-text);
+    }
+
+    .card .btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+    .btn-ghost {
+      width: auto;
+      display: inline-flex;
+      min-height: 40px;
+      border-color: transparent;
+      color: var(--muted);
+      padding: 8px 16px;
+    }
+
+    .btn-ghost:hover { color: var(--text); border-color: transparent; }
+
+    .btn-small {
+      width: auto;
+      min-height: 36px;
+      padding: 7px 14px;
+      font-size: 0.8rem;
+    }
+
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .btn:focus-visible,
+    input:focus-visible,
+    .tab:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      font: inherit;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      padding: 4px 0;
+      align-self: flex-start;
+    }
+
+    .link-btn:hover { color: var(--text); }
+
+    /* ---------- Orders tab ---------- */
+    .orders { max-width: 1040px; margin: 0 auto; }
+    .orders-head { margin-bottom: 24px; }
+
+    .orders-head h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .orders-head p { font-size: 0.85rem; margin-top: 6px; }
+
+    .group { margin-bottom: 30px; }
+
+    .group-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .order-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .order {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .order-name { font-size: 1rem; font-weight: 650; letter-spacing: -0.01em; }
+    .order-meta { font-size: 0.8rem; color: var(--muted); word-break: break-all; }
+    .order-msg { font-size: 0.875rem; color: var(--muted); }
+
+    .order-state {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 4px 11px;
+    }
+
+    .order-state::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .order-state.done { color: var(--text); border-color: var(--text); }
+    .order-state.done::before { background: var(--ok); }
+
+    .device-timer {
+      font-size: 0.92rem;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      text-align: center;
+      padding: 10px 12px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-sm);
+    }
+
+    .device-renew { margin-top: 4px; }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 72px 16px;
+      font-size: 0.95rem;
+    }
+
+    .empty-sub { font-size: 0.85rem; margin-top: 8px; text-align: center; }
+
+    /* ---------- Floating tab bar ---------- */
+    .tabbar {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      width: min(440px, calc(100% - 32px));
+      height: var(--tabbar-h);
+      padding: 5px;
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      backdrop-filter: blur(16px) saturate(1.4);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow-md);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      z-index: 50;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.25s var(--ease), color 0.25s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .tab:hover { color: var(--text); }
+
+    .tab[aria-current="page"] {
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    /* ---------- Modals ---------- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--backdrop);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+      animation: fade-in 0.2s ease-out;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 24px 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modal-in 0.25s var(--ease);
+    }
+
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .modal h3 { font-size: 1.05rem; font-weight: 650; line-height: 1.4; letter-spacing: -0.01em; }
+
+    .modal-price {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 14px 0;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .modal-subtitle { font-size: 0.9rem; color: var(--muted); margin-top: 10px; }
+
+    .modal-details { list-style: none; color: var(--muted); font-size: 0.875rem; margin-bottom: 22px; }
+    .modal-details li { padding: 9px 0; border-top: 1px solid var(--line); }
+    .modal-details li:first-child { border-top: none; padding-top: 0; }
+
+    .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .modal-terms { margin-top: 18px; font-size: 0.75rem; color: var(--muted); text-align: center; }
+    .modal-terms a { color: var(--text); }
+
+    .ref-code {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-align: center;
+      margin: 18px 0 10px;
+      color: var(--text);
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    /* ---------- Forms ---------- */
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .form label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    /* 16px font size stops iPhone Safari from zooming in on focus */
+    .form input {
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text);
+      min-height: 46px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form input::placeholder { color: var(--muted); opacity: 0.7; }
+
+    .form input:focus {
+      outline: none;
+      border-color: var(--text);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    .form-error {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--danger);
+      min-height: 1.3em;
+    }
+
+    .help { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+
+    .result-error { font-size: 0.85rem; color: var(--danger); font-weight: 500; }
+
+    .important-note {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--danger);
+      background: color-mix(in srgb, var(--danger) 10%, transparent);
+      border-radius: 6px;
+      padding: 3px 8px;
+      letter-spacing: 0.02em;
+      width: fit-content;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 640px) {
+      body { padding: 48px 16px calc(var(--tabbar-h) + 56px + env(safe-area-inset-bottom, 0px)); }
+      .hero { margin-bottom: 40px; }
+      .grid, .help-grid { grid-template-columns: 1fr; }
+      .card { padding: 24px 22px 22px; }
+      .lookup-card { padding: 24px 20px 22px; }
+      .modal { padding: 24px 20px 20px; }
+    }
+
+    /* ---------- Motion preferences ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Packages tab -->
+  <section id="view-packages">
+    <header class="hero">
+      <span class="eyebrow">B1ttrs</span>
+      <h1>P12 Certificates</h1>
+      <p>Choose the package that fits your needs. One certificate covers one device only.</p>
+      <nav class="hero-actions" aria-label="Quick links">
+        <button type="button" class="btn btn-ghost" data-goto="help">How to buy?</button>
+        <button type="button" class="btn btn-ghost" data-goto="check">Check an order</button>
+      </nav>
+    </header>
+
+    <main class="grid">
+
+      <article class="card" aria-labelledby="pkg-basic">
+        <h2 id="pkg-basic">P12 Basic 1 Year Certificate Package For 1 Device</h2>
+        <span class="tag">Starter (No Warranty)</span>
+        <div class="price">$6</div>
+        <ul>
+          <li>1 device via UDID binding</li>
+          <li>iOS 16 and above</li>
+          <li>All iPhone, iPad, iPod, and Apple TV</li>
+        </ul>
+        <button type="button" class="btn" data-package="basic">Buy Now</button>
+      </article>
+
+      <article class="card" aria-labelledby="pkg-standard">
+        <h2 id="pkg-standard">P12 Standard 1 Year Certificate Package For 1 Device</h2>
+        <span class="tag">Popular</span>
+        <div class="price">$8</div>
+        <ul>
+          <li>All iOS versions supported</li>
+          <li>40 days warranty</li>
+          <li>iPhone Xs and newer</li>
+          <li>JIT supported (requires Mac/PC)</li>
+        </ul>
+        <button type="button" class="btn" data-package="standard">Buy Now</button>
+      </article>
+
+      <article class="card" aria-labelledby="pkg-premium">
+        <h2 id="pkg-premium">P12 Premium 1 Year Certificate Package For 1 Device</h2>
+        <span class="tag">Best Value</span>
+        <div class="price">$19.99</div>
+        <ul>
+          <li>All iOS versions supported</li>
+          <li>300 days warranty</li>
+          <li>All iDevices supported</li>
+          <li>JIT supported (requires Mac/PC)</li>
+        </ul>
+        <button type="button" class="btn" data-package="premium">Buy Now</button>
+      </article>
+
+    </main>
+
+    <div class="bottom-link">
+      <a href="/tos" class="btn btn-ghost">Terms of Service</a>
+    </div>
+
+    <footer>© 2026 Bitters Services</footer>
+  </section>
+
+  <!-- Orders tab -->
+  <section id="view-orders" hidden>
+    <div class="orders">
+      <div class="orders-head">
+        <h2>Orders</h2>
+        <p>Orders placed on this device appear here.<br>Note: If order failed to deliver to admins don't worry we have a backup and will deliver to your email.</p>
+      </div>
+      <div id="orders-content"></div>
+    </div>
+  </section>
+
+  <!-- Check tab -->
+  <section id="view-check" hidden>
+    <div class="narrow">
+      <div class="lookup-card">
+        <h2 id="lookup-title">Check an order</h2>
+        <p>Use this if you placed the order on another device. Enter the order reference and the delivery email you used.</p>
+
+        <form class="form" id="lookup-form" novalidate>
+          <label>
+            Order reference
+            <input type="text" id="lookup-ref" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. 3F9A1C2B" maxlength="12" required>
+          </label>
+          <label>
+            Delivery email
+            <input type="email" id="lookup-email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="The email you entered when ordering" required>
+          </label>
+          <button type="submit" class="btn btn-primary" id="lookup-submit">Check status</button>
+        </form>
+
+        <div class="lookup-result" id="lookup-result" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Help tab -->
+  <section id="view-help" hidden>
+    <div class="help-grid">
+
+      <article class="card" id="how-to-buy" aria-labelledby="how-title">
+        <h2 id="how-title">How to Buy</h2>
+        <span class="tag">Supported cryptocurrencies: ETH, TRX, USDT, SOL</span>
+        <ol>
+          <li>Click "Buy Now" on the package you want.</li>
+          <li>Enter your device UDID and delivery email, then confirm.</li>
+          <li>Save the order reference shown, then complete the payment on the checkout page.</li>
+          <li>Wait a few minutes to a few hours for the package to be delivered by email.</li>
+        </ol>
+        <p>Track your devices and renewals in the Orders tab.</p>
+      </article>
+
+      <article class="card" aria-labelledby="renew-title">
+        <h2 id="renew-title">How to Renew Expired Certificates?</h2>
+        <span class="tag">Supported cryptocurrencies: ETH, TRX, USDT, SOL</span>
+        <ol>
+          <li>Open the Orders tab. The Renew button on your device unlocks when its timer ends.</li>
+          <li>Click Renew and complete the payment on the renewal page.</li>
+          <li>Wait a few minutes to a few hours for the renewed package to be delivered by email.</li>
+        </ol>
+        <p>Renewals open for the package you bought, once its year is up.</p>
+      </article>
+
+      <article class="card" aria-labelledby="faq-title">
+        <h2 id="faq-title">Frequently Asked</h2>
+        <div class="faq">
+          <details>
+            <summary>How long does delivery take?</summary>
+            <p>Usually a few minutes to a few hours after payment.</p>
+          </details>
+          <details>
+            <summary>Can one certificate be used on two devices?</summary>
+            <p>No. Each certificate covers one device UDID. Buy another package for another device.</p>
+          </details>
+          <details>
+            <summary>Where do I find my UDID?</summary>
+            <p>Use the Get UDID link on the order form.</p>
+          </details>
+          <details>
+            <summary>Where do I find my order reference?</summary>
+            <p>It appears after you confirm your details. It's also saved in the Orders tab on that device.</p>
+          </details>
+          <details>
+            <summary>I typed the wrong UDID or email. What do I do?</summary>
+            <p>Contact support with your order reference as soon as possible, before the package is delivered.</p>
+          </details>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="bottom-link">
+      <a href="/tos" class="btn btn-ghost">Terms of Service</a>
+    </div>
+  </section>
+
+  <!-- Bottom tab bar -->
+  <nav class="tabbar" aria-label="Main">
+    <button type="button" class="tab" data-tab="packages" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+      <span>Packages</span>
+    </button>
+    <button type="button" class="tab" data-tab="orders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 8l-9-5-9 5v8l9 5 9-5z"/>
+        <path d="M3 8l9 5 9-5"/>
+        <path d="M12 13v8"/>
+      </svg>
+      <span>Orders</span>
+    </button>
+    <button type="button" class="tab" data-tab="check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="M20 20l-4-4"/>
+      </svg>
+      <span>Check</span>
+    </button>
+    <button type="button" class="tab" data-tab="help">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/>
+        <path d="M12 17h.01"/>
+      </svg>
+      <span>Help</span>
+    </button>
+  </nav>
+
+  <!-- Confirmation modal (UDID + delivery email) -->
+  <div class="modal-backdrop" id="confirm-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-price" tabindex="-1">
+      <h3 id="modal-title"></h3>
+      <p class="modal-price" id="modal-price"></p>
+      <ul class="modal-details" id="modal-details"></ul>
+      <form class="form" id="udid-form" novalidate style="margin-top:0; margin-bottom:22px;">
+        <label>
+          <span class="important-note">*IMPORTANT: MAKE SURE ITS CORRECT</span>
+          Device UDID
+          <input type="text" id="modal-udid" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Paste your device UDID" required>
+        </label>
+        <label>
+          <span class="important-note">*IMPORTANT: MAKE SURE ITS CORRECT</span>
+          Delivery email
+          <input type="email" id="modal-email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="Where the certificate will be sent" required>
+        </label>
+        <span class="help">The certificate is bound to this UDID and sent to this email.</span>
+        <p class="form-error" id="modal-error" role="alert"></p>
+      </form>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="modal-no">No, go back</button>
+        <button type="button" class="btn btn-primary" id="modal-yes">Yes, continue</button>
+      </div>
+      <p class="modal-terms">By purchasing this package, you agree to our <a href="/tos">Terms of Service</a>. Don't know how to get UDID? <a href="https://udid.tech" target="_blank" rel="noopener">Get UDID</a></p>
+    </div>
+  </div>
+
+  <!-- Order reference modal (shown before going to payment) -->
+  <div class="modal-backdrop" id="ref-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ref-title" tabindex="-1">
+      <h3 id="ref-title">Your order reference</h3>
+      <p class="ref-code" id="ref-code"></p>
+      <p class="modal-subtitle">Save this reference. It's also saved in Orders on this device. Then continue to payment.</p>
+      <div class="modal-actions" style="margin-top:22px;">
+        <button type="button" class="btn" id="ref-copy">Copy</button>
+        <button type="button" class="btn btn-primary" id="ref-continue">Continue to payment</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "/api";
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const MY_ORDERS_KEY = "p12_my_orders";
+
+    // Must match PACKAGES on the server.
+    const PACKAGES = {
+      basic: {
+        name: "P12 Basic 1 Year", price: "$6",
+        details: ["1 device via UDID binding", "iOS 16 and above", "iPhone, iPad, iPod, and Apple TV", "No warranty"]
+      },
+      standard: {
+        name: "P12 Standard 1 Year", price: "$8",
+        details: ["All iOS versions supported", "40 days warranty", "iPhone Xs and newer", "JIT supported (requires Mac/PC)"]
+      },
+      premium: {
+        name: "P12 Premium Plan 1 Year", price: "$19.99",
+        details: ["All iOS versions supported", "300 days warranty", "All iDevices supported", "JIT supported (requires Mac/PC)"]
+      }
+    };
+
+    // Renewal links, one per package. Replace each placeholder with that package's real renewal link.
+    const RENEW_LINKS = {
+      basic: "https://YOUR-RENEW-LINK-BASIC",
+      standard: "https://YOUR-RENEW-LINK-STANDARD",
+      premium: "https://YOUR-RENEW-LINK-PREMIUM"
+    };
+
+    function renewUrlFor(packageKey) {
+      const url = RENEW_LINKS[packageKey];
+      return url && !url.includes("YOUR-") ? url : null;
+    }
+
+    // ---- API helper ----
+    async function api(path, options = {}) {
+      const res = await fetch(API_BASE + path, {
+        ...options,
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+      return data;
+    }
+
+    function h(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function fmtDate(utcString) {
+      if (!utcString) return "";
+      return new Date(utcString.endsWith("Z") ? utcString : utcString + "Z").toLocaleDateString();
+    }
+
+    function formatRemaining(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const pad = n => String(n).padStart(2, "0");
+      return `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+    }
+
+    // ---- Saved orders (this device only) ----
+    // Stores only the reference, email, and package name. UDIDs are never saved in the browser.
+    function getSavedOrders() {
+      try { return JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]"); } catch { return []; }
+    }
+
+    function setSavedOrders(list) {
+      try { localStorage.setItem(MY_ORDERS_KEY, JSON.stringify(list)); } catch {}
+    }
+
+    function rememberOrder(entry) {
+      const list = getSavedOrders().filter(o => o.ref !== entry.ref);
+      list.unshift(entry);
+      setSavedOrders(list.slice(0, 50));
+    }
+
+    function forgetOrder(ref) {
+      setSavedOrders(getSavedOrders().filter(o => o.ref !== ref));
+    }
+
+    // ---- Tabs ----
+    const tabs = document.querySelectorAll(".tab");
+    const views = {
+      packages: document.getElementById("view-packages"),
+      orders: document.getElementById("view-orders"),
+      check: document.getElementById("view-check"),
+      help: document.getElementById("view-help")
+    };
+
+    function switchTab(name) {
+      Object.entries(views).forEach(([key, el]) => { el.hidden = key !== name; });
+      tabs.forEach(t => {
+        if (t.dataset.tab === name) t.setAttribute("aria-current", "page");
+        else t.removeAttribute("aria-current");
+      });
+      window.scrollTo({ top: 0, behavior: "auto" });
+
+      if (name === "orders") {
+        renderOrders();
+      } else {
+        clearTimeout(ordersTimer);
+        stopCountdowns();
+      }
+    }
+
+    tabs.forEach(t => t.addEventListener("click", () => switchTab(t.dataset.tab)));
+    document.querySelectorAll("[data-goto]").forEach(b =>
+      b.addEventListener("click", () => switchTab(b.dataset.goto)));
+
+    // ---- Orders tab ----
+    const ordersContent = document.getElementById("orders-content");
+    let ordersTimer = null;      // refreshes order data from the server
+    let countdownTimer = null;   // ticks the device countdowns every second
+    let deviceCountdowns = [];   // one entry per device card
+
+    const STATE_TEXT = {
+      pending: { label: "Waiting for payment", done: false,
+        msg: () => "Complete the payment on the checkout page to start delivery." },
+      delivering: { label: "Delivering", done: false,
+        msg: () => "Delivering package.. This should take a moment" },
+      delivered: { label: "Delivered", done: true,
+        msg: email => `Package delivered to ${email}` }
+    };
+
+    function stopCountdowns() {
+      if (countdownTimer) clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+
+    function tickCountdowns() {
+      const now = Date.now();
+      deviceCountdowns.forEach(c => {
+        if (Number.isNaN(c.expiresMs)) {
+          c.timer.textContent = "Expiry date not set";
+          c.renewBtn.disabled = true;
+          return;
+        }
+
+        const left = c.expiresMs - now;
+        if (left > 0) {
+          c.timer.textContent = `Renew available in ${formatRemaining(left)}`;
+          c.renewBtn.disabled = true;
+        } else {
+          c.timer.textContent = "Your year is up. You can renew now.";
+          c.renewBtn.disabled = !renewUrlFor(c.packageKey);
+        }
+      });
+    }
+
+    // A pending or delivering order, shown as a status card.
+    function statusCard(o) {
+      const info = STATE_TEXT[o.state];
+      const card = h("article", "order");
+      card.append(
+        h("div", "order-name", o.package_name),
+        h("div", "order-meta", `Ref ${o.ref} · Ordered ${fmtDate(o.created_at)}`),
+        h("span", "order-state" + (info.done ? " done" : ""), info.label),
+        h("div", "order-msg", info.msg(o.email))
+      );
+
+      const forget = h("button", "link-btn", "Remove from this device");
+      forget.type = "button";
+      forget.addEventListener("click", () => {
+        forgetOrder(o.ref);
+        renderOrders();
+      });
+      card.appendChild(forget);
+      return card;
+    }
+
+    // A delivered order, shown as a device card with a countdown and a Renew button.
+    function deviceCard(d, number) {
+      const expiresMs = Date.parse(d.expires_at || "");
+      const expiryText = Number.isNaN(expiresMs) ? "Not set" : new Date(expiresMs).toLocaleString();
+
+      const card = h("article", "order device");
+      const timer = h("div", "device-timer", "");
+      const renewBtn = h("button", "btn btn-primary device-renew", "Renew");
+      renewBtn.type = "button";
+      renewBtn.disabled = true;
+
+      renewBtn.addEventListener("click", () => {
+        const url = renewUrlFor(d.package_key);
+        if (url && !renewBtn.disabled) window.location.href = url;
+      });
+
+      card.append(
+        h("div", "order-name", `Device ${number}`),
+        h("div", "order-meta", d.package_name),
+        h("div", "order-msg", `Expires: ${expiryText}`),
+        timer,
+        renewBtn
+      );
+
+      deviceCountdowns.push({ expiresMs, timer, renewBtn, packageKey: d.package_key });
+      return card;
+    }
+
+    function missingCard(saved) {
+      const card = h("article", "order");
+      card.append(
+        h("div", "order-name", saved.package_name || "Order"),
+        h("div", "order-meta", `Ref ${saved.ref}`),
+        h("span", "order-state", "Not found"),
+        h("div", "order-msg", "This order couldn't be found with the saved email. It may have been removed or changed.")
+      );
+
+      const forget = h("button", "link-btn", "Remove from this device");
+      forget.type = "button";
+      forget.addEventListener("click", () => {
+        forgetOrder(saved.ref);
+        renderOrders();
+      });
+      card.appendChild(forget);
+      return card;
+    }
+
+    function group(title, nodes) {
+      const wrap = h("div", "group");
+      wrap.appendChild(h("h3", "group-title", `${title} (${nodes.length})`));
+      const list = h("div", "order-list");
+      nodes.forEach(n => list.appendChild(n));
+      wrap.appendChild(list);
+      return wrap;
+    }
+
+    async function renderOrders() {
+      clearTimeout(ordersTimer);
+      stopCountdowns();
+
+      const saved = getSavedOrders();
+
+      if (saved.length === 0) {
+        ordersContent.replaceChildren(
+          h("p", "empty", "No orders on this device yet."),
+          h("p", "empty-sub", "Orders you place here appear in this tab. To check an order from another device, use the Check tab.")
+        );
+        return;
+      }
+
+      if (!ordersContent.hasChildNodes()) {
+        ordersContent.replaceChildren(h("p", "empty", "Loading…"));
+      }
+
+      try {
+        const { results } = await api("/orders/status", {
+          method: "POST",
+          body: JSON.stringify({ orders: saved.map(o => ({ ref: o.ref, email: o.email })) })
+        });
+
+        const byRef = new Map(results.map(r => [r.ref, r]));
+        const pending = [];
+        const delivering = [];
+        const delivered = [];
+        const missing = [];
+
+        saved.forEach(s => {
+          const r = byRef.get(s.ref);
+          if (!r || !r.found) {
+            missing.push(s);
+            return;
+          }
+          const item = { ...s, ...r, email: s.email };
+          if (r.state === "delivered") delivered.push(item);
+          else if (r.state === "delivering") delivering.push(item);
+          else pending.push(item);
+        });
+
+        // Number devices in the order they were delivered: Device 1, Device 2, and so on.
+        delivered.sort((a, b) => (a.delivered_at || "").localeCompare(b.delivered_at || ""));
+
+        // Build the cards. deviceCard() registers each countdown, so reset the list first.
+        deviceCountdowns = [];
+        const wrap = document.createDocumentFragment();
+
+        if (pending.length) wrap.appendChild(group("Waiting for payment", pending.map(statusCard)));
+        if (delivering.length) wrap.appendChild(group("Delivering", delivering.map(statusCard)));
+        if (delivered.length) {
+          wrap.appendChild(group("Devices", delivered.map((d, i) => deviceCard(d, i + 1))));
+        }
+        if (missing.length) {
+          wrap.appendChild(group("Not found", missing.map(missingCard)));
+        }
+
+        ordersContent.replaceChildren(wrap);
+
+        // Start the countdowns, ticking once a second.
+        if (deviceCountdowns.length) {
+          tickCountdowns();
+          countdownTimer = setInterval(tickCountdowns, 1000);
+        }
+
+        // Refresh the order data while any order is still unfinished.
+        if ((pending.length || delivering.length) && !views.orders.hidden) {
+          ordersTimer = setTimeout(renderOrders, 15000);
+        }
+      } catch (err) {
+        ordersContent.replaceChildren(h("p", "empty", `Could not load orders. ${err.message}`));
+      }
+    }
+
+    // ---- Packages: purchase flow ----
+    const confirmModal = document.getElementById("confirm-modal");
+    const refModal = document.getElementById("ref-modal");
+    const titleEl = document.getElementById("modal-title");
+    const priceEl = document.getElementById("modal-price");
+    const detailsEl = document.getElementById("modal-details");
+    const udidInput = document.getElementById("modal-udid");
+    const emailInput = document.getElementById("modal-email");
+    const modalError = document.getElementById("modal-error");
+    const yesBtn = document.getElementById("modal-yes");
+    const noBtn = document.getElementById("modal-no");
+    const refCode = document.getElementById("ref-code");
+    const refCopy = document.getElementById("ref-copy");
+    const refContinue = document.getElementById("ref-continue");
+
+    let lastFocused = null;
+    let pending = null;      // package being bought
+    let checkoutUrl = null;  // pay link returned by the server after the order is saved
+
+    function openModal(modal) {
+      lastFocused = document.activeElement;
+      modal.hidden = false;
+      document.body.classList.add("modal-open");
+    }
+
+    function closeModal(modal) {
+      modal.hidden = true;
+      if (confirmModal.hidden && refModal.hidden) document.body.classList.remove("modal-open");
+      if (lastFocused) lastFocused.focus();
+    }
+
+    function openConfirm(pkg) {
+      pending = pkg;
+      titleEl.textContent = `Are you sure you want to buy "${pkg.name}"?`;
+      priceEl.textContent = pkg.price;
+      detailsEl.innerHTML = "";
+      pkg.details.forEach(text => detailsEl.appendChild(h("li", "", text)));
+      udidInput.value = "";
+      emailInput.value = "";
+      modalError.textContent = "";
+      yesBtn.disabled = false;
+      yesBtn.textContent = "Yes, continue";
+      openModal(confirmModal);
+      udidInput.focus();
+    }
+
+    document.querySelectorAll("[data-package]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.package;
+        openConfirm({ ...PACKAGES[key], key });
+      });
+    });
+
+    noBtn.addEventListener("click", () => closeModal(confirmModal));
+    confirmModal.addEventListener("click", e => { if (e.target === confirmModal) closeModal(confirmModal); });
+
+    // Saves the order (UDID and email), remembers it on this device, then shows the reference before payment.
+    yesBtn.addEventListener("click", async () => {
+      if (!pending) return;
+      const udid = udidInput.value.trim().toUpperCase();
+      const email = emailInput.value.trim().toLowerCase();
+      const packageKey = pending.key;
+      const packageName = pending.name;
+
+      if (!/^[A-Z0-9-]{20,50}$/.test(udid)) {
+        modalError.textContent = "Please enter a valid device UDID.";
+        udidInput.focus();
+        return;
+      }
+      if (!EMAIL_RE.test(email)) {
+        modalError.textContent = "Please enter a valid delivery email.";
+        emailInput.focus();
+        return;
+      }
+
+      yesBtn.disabled = true;
+      yesBtn.textContent = "Please wait…";
+      modalError.textContent = "";
+
+      try {
+        const { ref, checkoutUrl: url } = await api("/orders", {
+          method: "POST",
+          body: JSON.stringify({ package: packageKey, udid, delivery_email: email })
+        });
+        checkoutUrl = url;
+        pending = null;
+        rememberOrder({
+          ref,
+          email,
+          package_key: packageKey,
+          package_name: packageName,
+          created_at: new Date().toISOString()
+        });
+
+        closeModal(confirmModal);
+        refCode.textContent = ref;
+        refCopy.textContent = "Copy";
+        openModal(refModal);
+        refContinue.focus();
+      } catch (err) {
+        modalError.textContent = err.message;
+        yesBtn.disabled = false;
+        yesBtn.textContent = "Yes, continue";
+      }
+    });
+
+    refCopy.addEventListener("click", () => {
+      const text = refCode.textContent;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(
+          () => { refCopy.textContent = "Copied"; },
+          () => alert(`Your reference: ${text}`)
+        );
+      } else {
+        alert(`Your reference: ${text}`);
+      }
+    });
+
+    // The reference modal can only be closed with "Continue to payment",
+    // so the customer always sees their reference before paying.
+    refContinue.addEventListener("click", () => {
+      if (checkoutUrl) window.location.href = checkoutUrl;
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && !confirmModal.hidden) closeModal(confirmModal);
+    });
+
+    // ---- Check tab ----
+    const lookupForm = document.getElementById("lookup-form");
+    const lookupRef = document.getElementById("lookup-ref");
+    const lookupEmail = document.getElementById("lookup-email");
+    const lookupSubmit = document.getElementById("lookup-submit");
+    const lookupResult = document.getElementById("lookup-result");
+
+    function showLookupError(message) {
+      lookupResult.replaceChildren(h("p", "result-error", message));
+    }
+
+    function renderLookup(o, email) {
+      const info = STATE_TEXT[o.state] || STATE_TEXT.pending;
+      const card = h("div", "order");
+      card.append(
+        h("div", "order-name", o.package_name),
+        h("div", "order-meta", `Ref ${o.ref} · Ordered ${fmtDate(o.created_at)}`),
+        h("span", "order-state" + (info.done ? " done" : ""), info.label),
+        h("div", "order-msg", info.msg(email))
+      );
+      lookupResult.replaceChildren(card);
+    }
+
+    lookupForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      const ref = lookupRef.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+      const email = lookupEmail.value.trim().toLowerCase();
+
+      if (ref.length !== 8) return showLookupError("Please enter the 8-character order reference.");
+      if (!EMAIL_RE.test(email)) return showLookupError("Please enter a valid delivery email.");
+
+      lookupSubmit.disabled = true;
+      lookupSubmit.textContent = "Checking…";
+      try {
+        const order = await api("/orders/lookup", {
+          method: "POST",
+          body: JSON.stringify({ ref, email })
+        });
+        renderLookup(order, email);
+      } catch (err) {
+        showLookupError(err.message);
+      } finally {
+        lookupSubmit.disabled = false;
+        lookupSubmit.textContent = "Check status";
+      }
+    });
+  </script>
+
+</body>
+</html>
