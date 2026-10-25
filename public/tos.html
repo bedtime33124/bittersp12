@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service | Bitters Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1117;
+      --card: #1a1d27;
+      --border: #2a2e3b;
+      --text: #e4e6ed;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --danger: #ef4444;
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card h2::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    ul, ol {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    li {
+      position: relative;
+      padding-left: 28px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    ul li::before {
+      content: '•';
+      position: absolute;
+      left: 8px;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    ol {
+      counter-reset: item;
+    }
+
+    ol li {
+      counter-increment: item;
+    }
+
+    ol li::before {
+      content: counter(item) ".";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    strong {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .highlight {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: #fca5a5;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 24px 16px;
+      }
+
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      .card {
+        padding: 22px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Terms of Service</h1>
+      <p>Bitters Services • Last updated: October 2025</p>
+    </header>
+
+    <!-- General Terms -->
+    <div class="card">
+      <h2>General Terms</h2>
+      <ul>
+        <li>
+          If you purchase any <strong>P12 Certificates</strong> and lose money due to not following the instructions carefully, we are not responsible and no refund will be issued.
+        </li>
+        <li>
+          Impersonating this website or any of our staff is strictly prohibited.
+        </li>
+      </ul>
+    </div>
+
+    <!-- Refund Policy -->
+    <div class="card">
+      <h2>Refund Policy</h2>
+      <ul>
+        <li>
+          Refunds are <strong>only</strong> issued in the following cases:
+          <ul style="margin-top: 12px; gap: 10px;">
+            <li>Package suddenly goes out of stock after payment</li>
+            <li>Package delivery errors on our side</li>
+            <li>Package is revoked immediately after payment</li>
+          </ul>
+        </li>
+        <li>
+          In all other cases: <strong>No Refund</strong>
+        </li>
+      </ul>
+      <div class="highlight">
+        Immediate refund refusal if you enter the wrong email and/or device UDID.
+      </div>
+    </div>
+
+    <!-- Renewal Policy -->
+    <div class="card">
+      <h2>Renewal Policy</h2>
+      <ol>
+        <li>
+          Package renewals are only available from the moment the package expires up to <strong>7 days</strong> after expiration. After 7 days, you must purchase a new package.
+        </li>
+        <li>
+          You can only renew <strong>1 package per device</strong>. Multiple renewals for the same package/device at once are not allowed.
+        </li>
+      </ol>
+    </div>
+
+    <!-- Purchase Policy -->
+    <div class="card">
+      <h2>Purchase Policy</h2>
+      <ol>
+        <li>
+          If you provide an incorrect email address and/or device UDID, we cannot deliver the package to the correct destination. In this case, we are not responsible and <strong>no refund</strong> will be provided.
+        </li>
+      </ol>
+    </div>
+
+    <footer>
+      © 2025 Bitters Services. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
